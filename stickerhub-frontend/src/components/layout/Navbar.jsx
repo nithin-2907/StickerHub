@@ -1,9 +1,12 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink } from 'react-router-dom'
-import { useCart } from '../../context/CartContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useContext } from 'react'
+import { CartContext } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthProvider'
 
 function Navbar() {
-  const { cartItems } = useCart()
+  const { cartItems } = useContext(CartContext)
+  const { user, logout } = useAuth()
 
   const totalItems = cartItems.reduce(
     (sum, item) => sum + item.quantity,
@@ -12,12 +15,10 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      {/* Logo */}
       <NavLink to="/" className="navbar-brand">
         StickerHub
       </NavLink>
 
-      {/* Menu */}
       <div className="navbar-menu">
         <NavLink
           to="/"
@@ -35,23 +36,34 @@ function Navbar() {
           )}
         </NavLink>
 
-        <NavLink
-          to="/login"
-          className={({ isActive }) =>
-            isActive ? 'nav-link-active' : 'nav-link'
-          }
-        >
-          Login
-        </NavLink>
+        {!user ? (
+          <>
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                isActive ? 'nav-link-active' : 'nav-link'
+              }
+            >
+              Login
+            </NavLink>
 
-        <NavLink
-          to="/register"
-          className={({ isActive }) =>
-            isActive ? 'nav-link-active' : 'nav-link'
-          }
-        >
-          Register
-        </NavLink>
+            <NavLink
+              to="/register"
+              className={({ isActive }) =>
+                isActive ? 'nav-link-active' : 'nav-link'
+              }
+            >
+              Register
+            </NavLink>
+          </>
+        ) : (
+          <div className="navbar-user">
+            <span className="navbar-username">{user.name}</span>
+            <button className="navbar-logout" onClick={logout}>
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   )

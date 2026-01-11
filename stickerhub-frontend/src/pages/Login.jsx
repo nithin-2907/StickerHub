@@ -1,7 +1,11 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthProvider'
 
 function Login() {
+  const navigate = useNavigate()
+  const { login } = useAuth()
+
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -29,7 +33,15 @@ function Login() {
     e.preventDefault()
     if (!validate()) return
 
-    alert('Login successful (mock)')
+    // ✅ Mock login (backend later)
+    login({
+      name: 'Rohan',
+      email: form.email,
+      role: 'USER'
+    })
+
+    // ✅ Redirect after login
+    navigate('/')
   }
 
   return (
